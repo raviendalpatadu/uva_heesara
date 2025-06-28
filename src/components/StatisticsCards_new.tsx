@@ -72,27 +72,35 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ statistics }) => {
         {stats.map((stat) => {
           const IconComponent = stat.icon;
           return (
-            <button 
+            <div 
               key={stat.title} 
-              className="stat-card cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 w-full text-left border-none bg-transparent p-5"
+              className="stat-card cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95"
               onClick={() => handleCardClick(stat.modalType)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCardClick(stat.modalType);
+                }
+              }}
               aria-label={`View details for ${stat.title}`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0 pr-3">
-                  <p className="text-sm sm:text-base font-medium text-gray-600 mb-2 leading-tight">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="responsive-text font-medium text-gray-600 mb-1 truncate">
                     {stat.title}
                   </p>
-                  <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                     {stat.value.toLocaleString()}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-500">Click for details</p>
+                  <p className="text-xs text-gray-500 mt-1">Click for details</p>
                 </div>
-                <div className={`p-3 sm:p-4 rounded-full ${stat.bgColor} flex-shrink-0`}>
-                  <IconComponent className={`w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 ${stat.color}`} />
+                <div className={`p-2 sm:p-3 rounded-full ${stat.bgColor} flex-shrink-0 ml-3`}>
+                  <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color}`} />
                 </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

@@ -98,8 +98,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
         Female: eventParticipants.Female || 0,
       };
     })
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 10); // Top 10 events
+    .sort((a, b) => b.count - a.count);
 
   // Prepare data for clubs bar chart - only show clubs with participants
   const clubData = Object.entries(statistics.clubBreakdown)
@@ -108,8 +107,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
       club: club.length > 20 ? club.substring(0, 20) + "..." : club,
       count,
     }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8); // Top 8 clubs
+    .sort((a, b) => b.count - a.count);
 
   return (
     <div className="charts-grid mb-6 sm:mb-8">
@@ -143,7 +141,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
 
       {/* Top Clubs */}
       <div className="card chart-card-single">
-        <h3 className="chart-title">Top Clubs by Participation</h3>
+        <h3 className="chart-title">Clubs by Participation</h3>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -170,7 +168,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
 
       {/* Top Events by Gender */}
       <div className="card chart-card-double">
-        <h3 className="chart-title">Top Events by Gender Participation</h3>
+        <h3 className="chart-title">Events by Gender Participation</h3>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
