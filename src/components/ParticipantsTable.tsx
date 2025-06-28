@@ -755,7 +755,7 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-gray-900 truncate">
-                          {archer.name}
+                          {archer.name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                         </div>
                         <div className="text-sm text-gray-500 truncate">
                           {archer.club}
@@ -778,9 +778,8 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
                       <div className="space-y-3">
                         {/* Full Name - shown when expanded */}
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-gray-600">Full Name:</span>
-                          <span className="text-sm text-gray-900 font-medium text-right max-w-[60%]">
-                            {archer.name}
+                          <span className="text-sm text-gray-900 font-medium text-left max-w-full">
+                            {archer.name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                           </span>
                         </div>
                         
