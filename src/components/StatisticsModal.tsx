@@ -115,8 +115,7 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
       case 'female':
         const topFemaleEvents = Object.entries(statistics.eventGenderBreakdown)
           .map(([event, breakdown]) => ({ event, count: breakdown.Female }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 5);
+          .sort((a, b) => b.count - a.count);
 
         return {
           title: 'Female Participants',
