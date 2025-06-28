@@ -103,8 +103,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
         Female: eventParticipants.Female || 0,
       };
     })
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8); // Limit to top 8 events for better mobile display
+    .sort((a, b) => b.count - a.count); // Limit to top 8 events for better mobile display
 
   // Prepare data for clubs bar chart - only show clubs with participants
   const clubData = Object.entries(statistics.clubBreakdown)
@@ -114,8 +113,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
       fullClub: club, // Keep full name for tooltip
       count,
     }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8); // Limit to top 8 clubs for better mobile display
+    .sort((a, b) => b.count - a.count); // Limit to top 8 clubs for better mobile display
 
   return (
     <div className="charts-grid mb-6 sm:mb-8">
