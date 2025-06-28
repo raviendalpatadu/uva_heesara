@@ -660,6 +660,17 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
                   </div>
                 </div>
               )}
+
+              {/* Collapse Button */}
+              <div className="pt-2 border-t border-gray-200">
+                <button
+                  onClick={() => setIsMobileFilterCollapsed(true)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all duration-200"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                  Collapse Filters
+                </button>
+              </div>
             </div>
           </div>
         </div>
