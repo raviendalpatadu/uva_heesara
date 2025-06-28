@@ -11,15 +11,13 @@ export interface ApiParticipant {
   ExtraEvent?: string;
 }
 
-const API_URL = ConfigManager.getConfig().apiBaseUrl;
-
 export class ParticipantApiService {
   /**
    * Fetch participants from Google Apps Script API with security validation and CORS handling
    */
   static async fetchParticipants(): Promise<ApiParticipant[]> {
     // Validate request security
-    const validation = RequestValidator.validateRequest();
+    const validation = await RequestValidator.validateRequest();
     if (!validation.valid) {
       throw new Error(`Security validation failed: ${validation.reason}`);
     }
@@ -55,8 +53,8 @@ export class ParticipantApiService {
    * Secure fetch with obfuscated URL
    */
   private static async fetchWithSecureURL(): Promise<ApiParticipant[]> {
-    const secureUrl = ConfigManager.getObfuscatedApiUrl();
-    const config = ConfigManager.getConfig();
+    const secureUrl = await ConfigManager.getObfuscatedApiUrl();
+    const config = await ConfigManager.getConfig();
     
     const headers: Record<string, string> = {
       'Accept': 'application/json',
@@ -91,7 +89,8 @@ export class ParticipantApiService {
    * Standard CORS fetch
    */
   private static async fetchWithCORS(queryParams = ''): Promise<ApiParticipant[]> {
-    const response = await fetch(`${API_URL}${queryParams}`, {
+    const config = await ConfigManager.getConfig();
+    const response = await fetch(`${config.apiBaseUrl}${queryParams}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -116,7 +115,8 @@ export class ParticipantApiService {
    * Minimal headers approach
    */
   private static async fetchWithMinimalHeaders(): Promise<ApiParticipant[]> {
-    const response = await fetch(API_URL, {
+    const config = await ConfigManager.getConfig();
+    const response = await fetch(config.apiBaseUrl, {
       method: 'GET',
       mode: 'cors',
     });

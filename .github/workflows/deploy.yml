@@ -41,13 +41,15 @@ jobs:
 
       - name: Build project
         env:
-          # Set production environment variables
+          # Only set environment, NO API URLs in build
           VITE_ENVIRONMENT: production
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
-          VITE_ALLOWED_ORIGINS: ${{ secrets.VITE_ALLOWED_ORIGINS }}
-          VITE_ENABLE_API_ENCRYPTION: ${{ secrets.VITE_ENABLE_API_ENCRYPTION }}
         run: npm run build
+
+      - name: Create runtime configuration
+        run: |
+          # Create config.json from template (this will be populated at runtime by the user)
+          cp public/config.json.template dist/config.json
+          echo "Runtime configuration template created"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

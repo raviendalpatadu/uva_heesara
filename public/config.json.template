@@ -1,0 +1,7 @@
+{
+  "apiBaseUrl": "",
+  "environment": "production",
+  "allowedOrigins": ["https://yourusername.github.io"],
+  "enableEncryption": false,
+  "apiTimeout": 10000
+}

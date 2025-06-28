@@ -25,7 +25,7 @@ class ConfigManager {
     
     return {
       apiBaseUrl,
-      apiKey: import.meta.env.VITE_API_KEY,
+      apiKey: this.getApiKeyFromStorage(),
       allowedOrigins: import.meta.env.VITE_ALLOWED_ORIGINS ? 
         import.meta.env.VITE_ALLOWED_ORIGINS.split(',') : 
         ['https://*.github.io', 'http://localhost:*', 'http://127.0.0.1:*'],
@@ -33,6 +33,15 @@ class ConfigManager {
       enableEncryption: import.meta.env.VITE_ENABLE_API_ENCRYPTION === 'true',
       apiTimeout: parseInt(import.meta.env.VITE_API_TIMEOUT ?? '10000', 10),
     };
+  }
+
+  private static getApiKeyFromStorage(): string | undefined {
+    // Only try to get API key from secure storage, never from environment
+    try {
+      return localStorage.getItem('uva_heesara_api_key') ?? undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   // Validate current origin against allowed origins
