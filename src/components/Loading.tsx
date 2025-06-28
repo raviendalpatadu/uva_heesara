@@ -62,7 +62,7 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
         <div className="mb-6">
           <div className="flex justify-center mb-4">
             <img 
-              src="/data/AR2fclrsBl2.png" 
+              src="./data/AR2fclrsBl2.png" 
               alt="UVA HEESARA 2025" 
               className="w-24 h-24 object-contain"
             />

@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
         <div className="text-center">
           <div className="mb-4">
             <img 
-              src="/data/AR2fclrsBl2.png" 
+              src="./data/AR2fclrsBl2.png" 
               alt="UVA HEESARA 2025" 
               className="w-24 h-24 object-contain mx-auto mb-4"
             />
