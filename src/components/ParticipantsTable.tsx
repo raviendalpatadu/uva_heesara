@@ -30,6 +30,9 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [isMobileFilterCollapsed, setIsMobileFilterCollapsed] = useState(true);
+  
+  // Separate state for event filter to avoid conflicts with TanStack Table
+  const [eventFilter, setEventFilterState] = useState('all');
 
   // Define columns
   const columns = useMemo<ColumnDef<Archer>[]>(() => [
@@ -100,10 +103,7 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
           )}
         </div>
       ),
-      filterFn: (row, columnId, value) => {
-        const cellValue = row.getValue(columnId) as string;
-        return cellValue === value;
-      },
+      // Remove the custom filterFn for now - let's use a different approach
     },
     {
       accessorKey: 'contact',
@@ -113,10 +113,23 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
     },
   ], []);
 
-  // Get unique events for filter dropdown
+  // Get unique events for filter dropdown (including both primary and extra events)
   const uniqueEvents = useMemo(() => {
-    const events = [...new Set(archers.map(archer => archer.primaryEvent))];
-    return events.filter(event => event && event.trim() !== '');
+    const allEvents = new Set<string>();
+    
+    archers.forEach(archer => {
+      // Add primary event
+      if (archer.primaryEvent && archer.primaryEvent.trim() !== '') {
+        allEvents.add(archer.primaryEvent);
+      }
+      
+      // Add extra event
+      if (archer.extraEvent && archer.extraEvent.trim() !== '') {
+        allEvents.add(archer.extraEvent);
+      }
+    });
+    
+    return Array.from(allEvents).sort();
   }, [archers]);
 
   // Get unique clubs for filter dropdown
@@ -125,13 +138,29 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
     return clubs.filter(club => club && club.trim() !== '').sort();
   }, [archers]);
 
+  // Apply manual filtering for events (since we need to check both primary and extra events)
+  const filteredData = useMemo(() => {
+    let filtered = [...archers];
+
+    // Apply event filter manually using separate state
+    if (eventFilter && eventFilter !== 'all') {
+      filtered = filtered.filter(archer => {
+        const primaryMatch = archer.primaryEvent === eventFilter;
+        const extraMatch = archer.extraEvent && archer.extraEvent.trim() !== '' && archer.extraEvent === eventFilter;
+        return primaryMatch || extraMatch;
+      });
+    }
+
+    return filtered;
+  }, [archers, eventFilter]); // Only depend on eventFilter, not columnFilters
+
   // Configure table
   const table = useReactTable({
-    data: archers,
+    data: filteredData, // Use manually filtered data
     columns,
     state: {
       globalFilter,
-      columnFilters,
+      columnFilters, // Keep all column filters as they are
       sorting,
     },
     onGlobalFilterChange: setGlobalFilter,
@@ -141,6 +170,25 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: (row, columnId, value) => {
+      // Custom global filter that includes extraEvent in search
+      const searchValue = value.toLowerCase();
+      const archer = row.original as Archer;
+      
+      // Search in name, club, primaryEvent, and extraEvent
+      const searchFields = [
+        archer.name,
+        archer.club,
+        archer.primaryEvent,
+        archer.extraEvent,
+        archer.gender,
+        archer.contact
+      ];
+      
+      return searchFields.some(field => 
+        field && field.toString().toLowerCase().includes(searchValue)
+      );
+    },
     initialState: {
       pagination: {
         pageSize: 25,
@@ -156,8 +204,7 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
 
   // Helper function to get event filter value
   const getEventFilter = () => {
-    const eventFilter = columnFilters.find(filter => filter.id === 'primaryEvent');
-    return eventFilter?.value as string ?? 'all';
+    return eventFilter;
   };
 
   // Helper function to get club filter value
@@ -180,14 +227,7 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
 
   // Update event filter
   const setEventFilter = (value: string) => {
-    if (value === 'all') {
-      setColumnFilters(prev => prev.filter(filter => filter.id !== 'primaryEvent'));
-    } else {
-      setColumnFilters(prev => [
-        ...prev.filter(filter => filter.id !== 'primaryEvent'),
-        { id: 'primaryEvent', value }
-      ]);
-    }
+    setEventFilterState(value);
   };
 
   // Update club filter
