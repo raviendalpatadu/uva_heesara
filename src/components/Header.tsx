@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Logo and Title */}
           <div className="flex items-center space-x-3 sm:space-x-4">
             <img 
-              src="./data/AR2fclrsBl2.png" 
+              src="/uva_heesara/data/AR2fclrsBl2.png" 
               alt="UVA HEESARA 2025" 
               className="logo"
             />

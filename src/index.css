@@ -55,7 +55,16 @@
 
   /* Mobile-responsive charts grid */
   .charts-grid {
-    @apply grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8;
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6;
+  }
+
+  /* Charts on mobile take full width, desktop can have 2x2 */
+  .chart-card-single {
+    @apply col-span-1;
+  }
+
+  .chart-card-double {
+    @apply col-span-1 md:col-span-2;
   }
 
   /* Mobile table wrapper */
@@ -135,11 +144,11 @@
 
   /* Mobile chart containers */
   .chart-container {
-    @apply h-64 sm:h-80 lg:h-96 w-full;
+    @apply h-48 sm:h-64 md:h-80 w-full;
   }
 
   .chart-title {
-    @apply text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4;
+    @apply text-sm sm:text-base md:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4;
   }
 
   /* Responsive table cells */

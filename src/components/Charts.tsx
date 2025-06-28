@@ -114,7 +114,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
   return (
     <div className="charts-grid mb-6 sm:mb-8">
       {/* Gender Distribution */}
-      <div className="card">
+      <div className="card chart-card-single">
         <h3 className="chart-title">Gender Distribution</h3>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
@@ -127,7 +127,7 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
                 label={({ name, percent }) =>
                   `${name} (${((percent || 0) * 100).toFixed(0)}%)`
                 }
-                outerRadius="70%"
+                outerRadius="60%"
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -142,62 +142,67 @@ const Charts: React.FC<ChartsProps> = ({ statistics }) => {
       </div>
 
       {/* Top Clubs */}
-      <div className="card">
+      <div className="card chart-card-single">
         <h3 className="chart-title">Top Clubs by Participation</h3>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={clubData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+              margin={{ top: 10, right: 10, left: 10, bottom: 40 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="club"
-                angle={-45}
+                angle={-35}
                 textAnchor="end"
-                height={80}
-                fontSize={10}
+                height={60}
+                fontSize={9}
                 interval={0}
+                tick={{ fontSize: 9 }}
               />
-              <YAxis fontSize={10} />
+              <YAxis fontSize={9} tick={{ fontSize: 9 }} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill="#0891b2" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="count" fill="#0891b2" radius={[2, 2, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Top Events by Gender */}
-      <div className="card col-span-2">
+      <div className="card chart-card-double">
         <h3 className="chart-title">Top Events by Gender Participation</h3>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={eventData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+              margin={{ top: 10, right: 10, left: 10, bottom: 50 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="event"
-                angle={-45}
+                angle={-35}
                 textAnchor="end"
-                height={80}
-                fontSize={10}
+                height={70}
+                fontSize={9}
                 interval={0}
+                tick={{ fontSize: 9 }}
               />
-              <YAxis fontSize={10} />
+              <YAxis fontSize={9} tick={{ fontSize: 9 }} />
               <Tooltip content={<GenderBarTooltip />} />
-              <Legend />
+              <Legend 
+                wrapperStyle={{ fontSize: '12px' }}
+                iconSize={10}
+              />
               <Bar
                 dataKey="Male"
                 fill="#2563eb"
-                radius={[4, 4, 0, 0]}
+                radius={[2, 2, 0, 0]}
                 name="Male"
               />
               <Bar
                 dataKey="Female"
                 fill="#ea580c"
-                radius={[4, 4, 0, 0]}
+                radius={[2, 2, 0, 0]}
                 name="Female"
               />
             </BarChart>
