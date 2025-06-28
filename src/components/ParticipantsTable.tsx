@@ -776,6 +776,14 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
                   {isExpanded && (
                     <div id={`participant-details-${row.id}`} className="border-t border-gray-200 p-4 bg-gray-50">
                       <div className="space-y-3">
+                        {/* Full Name - shown when expanded */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-gray-600">Full Name:</span>
+                          <span className="text-sm text-gray-900 font-medium text-right max-w-[60%]">
+                            {archer.name}
+                          </span>
+                        </div>
+                        
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium text-gray-600">Gender:</span>
                           <span className={`badge ${
