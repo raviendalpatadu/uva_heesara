@@ -19,7 +19,6 @@ interface ParticipantsTableProps {
 
 // Declare module augmentation for meta property
 declare module '@tanstack/react-table' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface ColumnMeta<TData, TValue> {
     className?: string;
   }
@@ -36,7 +35,6 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
     {
       accessorKey: 'name',
       header: 'Name',
-      // eslint-disable-next-line react/display-name
       cell: ({ getValue }: any) => (
         <div className="font-medium text-gray-900 truncate max-w-xs sm:max-w-none">
           {getValue()}
