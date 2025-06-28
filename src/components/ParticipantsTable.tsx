@@ -274,63 +274,158 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
       <div className="card">
         {/* Desktop Header */}
         <div className="hide-mobile">
-          <div className="flex flex-col space-y-4 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="chart-title mb-4 sm:mb-0">
+          <div className="space-y-4 mb-6">
+            {/* Title and Main Actions */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <h3 className="chart-title">
                 Participants ({table.getFilteredRowModel().rows.length})
               </h3>
+              
+              {hasActiveFilters() && (
+                <button
+                  onClick={() => {
+                    setGlobalFilter('');
+                    setGenderFilter('all');
+                    setEventFilter('all');
+                    setClubFilter('all');
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 border border-red-200 hover:border-red-300"
+                >
+                  <FilterX className="w-4 h-4" />
+                  Clear All Filters
+                </button>
+              )}
             </div>
             
-            {/* Filters */}
-            <div className="table-filters">
+            {/* Single Row - All Filters */}
+            <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
               {/* Search */}
-              <div className="search-container">
+              <div className="relative min-w-[250px]">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Search participants..."
+                  placeholder="Search..."
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
-                  className="search-input"
+                  className="w-full pl-10 pr-8 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:border-tournament-blue focus:ring-0 transition-all duration-200"
                 />
+                {globalFilter && (
+                  <button
+                    onClick={() => setGlobalFilter('')}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
               </div>
 
-              {/* Gender Filter */}
-              <select
-                value={getGenderFilter()}
-                onChange={(e) => setGenderFilter(e.target.value)}
-                className="form-select"
-              >
-                <option value="all">All Genders</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
+              {/* Gender Pills */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Gender:</span>
+                <button
+                  onClick={() => setGenderFilter('all')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
+                    getGenderFilter() === 'all' 
+                      ? 'bg-tournament-blue text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setGenderFilter('Male')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
+                    getGenderFilter() === 'Male' 
+                      ? 'bg-blue-500 text-white' 
+                      : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                  }`}
+                >
+                  Male
+                </button>
+                <button
+                  onClick={() => setGenderFilter('Female')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
+                    getGenderFilter() === 'Female' 
+                      ? 'bg-pink-500 text-white' 
+                      : 'bg-pink-100 text-pink-700 hover:bg-pink-200'
+                  }`}
+                >
+                  Female
+                </button>
+              </div>
 
               {/* Event Filter */}
-              <select
-                value={getEventFilter()}
-                onChange={(e) => setEventFilter(e.target.value)}
-                className="form-select"
-              >
-                <option value="all">All Events</option>
-                {uniqueEvents.map(event => (
-                  <option key={event} value={event}>{event}</option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Event:</span>
+                <div className="flex items-center gap-1">
+                  <select
+                    value={getEventFilter()}
+                    onChange={(e) => setEventFilter(e.target.value)}
+                    className={`px-3 py-2 text-sm font-medium border rounded-lg transition-all duration-200 focus:ring-0 min-w-[150px] ${
+                      getEventFilter() !== 'all'
+                        ? 'border-purple-400 bg-purple-50 text-purple-800'
+                        : 'border-gray-300 bg-white focus:border-purple-400'
+                    }`}
+                  >
+                    <option value="all">All Events</option>
+                    {uniqueEvents.map(event => (
+                      <option key={event} value={event}>
+                        {event}
+                      </option>
+                    ))}
+                  </select>
+                  {getEventFilter() !== 'all' && (
+                    <button
+                      onClick={() => setEventFilter('all')}
+                      className="text-red-500 hover:text-red-700 p-1"
+                      title="Clear Event Filter"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
 
               {/* Club Filter */}
-              <select
-                value={getClubFilter()}
-                onChange={(e) => setClubFilter(e.target.value)}
-                className="form-select"
-              >
-                <option value="all">All Clubs</option>
-                {uniqueClubs.map(club => (
-                  <option key={club} value={club}>
-                    {club.length > 30 ? club.substring(0, 30) + "..." : club}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Club:</span>
+                <div className="flex items-center gap-1">
+                  <select
+                    value={getClubFilter()}
+                    onChange={(e) => setClubFilter(e.target.value)}
+                    className={`px-3 py-2 text-sm font-medium border rounded-lg transition-all duration-200 focus:ring-0 min-w-[150px] ${
+                      getClubFilter() !== 'all'
+                        ? 'border-orange-400 bg-orange-50 text-orange-800'
+                        : 'border-gray-300 bg-white focus:border-orange-400'
+                    }`}
+                  >
+                    <option value="all">All Clubs</option>
+                    {uniqueClubs.map(club => (
+                      <option key={club} value={club}>
+                        {club.length > 20 ? club.substring(0, 20) + "..." : club}
+                      </option>
+                    ))}
+                  </select>
+                  {getClubFilter() !== 'all' && (
+                    <button
+                      onClick={() => setClubFilter('all')}
+                      className="text-red-500 hover:text-red-700 p-1"
+                      title="Clear Club Filter"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Results Count */}
+              <div className="ml-auto flex items-center gap-3">
+                {hasActiveFilters() && (
+                  <span className="text-sm text-blue-600 font-medium bg-blue-100 px-3 py-1 rounded-full">
+                    {table.getFilteredRowModel().rows.length} found
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
