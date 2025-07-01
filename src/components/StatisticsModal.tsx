@@ -75,7 +75,7 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
           )
         };
 
-      case 'male':
+      case 'male': {
         const topMaleEvents = Object.entries(statistics.eventGenderBreakdown)
           .map(([event, breakdown]) => ({ event, count: breakdown.Male }))
           .sort((a, b) => b.count - a.count)
@@ -111,8 +111,9 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
             </div>
           )
         };
+      }
 
-      case 'female':
+      case 'female': {
         const topFemaleEvents = Object.entries(statistics.eventGenderBreakdown)
           .map(([event, breakdown]) => ({ event, count: breakdown.Female }))
           .sort((a, b) => b.count - a.count);
@@ -147,8 +148,9 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
             </div>
           )
         };
+      }
 
-      case 'events':
+      case 'events': {
         const eventList = Object.entries(statistics.eventBreakdown)
           .sort((a, b) => b[1] - a[1]);
 
@@ -193,8 +195,9 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
             </div>
           )
         };
+      }
 
-      case 'clubs':
+      case 'clubs': {
         const clubList = Object.entries(statistics.clubBreakdown)
           .sort((a, b) => b[1] - a[1]);
 
@@ -228,6 +231,7 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
             </div>
           )
         };
+      }
 
       default:
         return null;
@@ -242,10 +246,7 @@ const StatisticsModal: React.FC<StatisticsModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
       
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">

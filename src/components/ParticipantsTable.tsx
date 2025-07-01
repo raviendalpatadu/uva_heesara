@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search, ChevronDown, ChevronUp, ChevronRight, X, Filter, FilterX } from 'lucide-react';
 import {
   useReactTable,

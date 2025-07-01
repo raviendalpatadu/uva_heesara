@@ -110,14 +110,14 @@ export const getAgeCategory = (age?: number): string => {
     return 'Unknown';
   }
   
-  if (age <= 12) return 'U12';
-  if (age <= 14) return 'U14';
-  if (age <= 16) return 'U16';
-  if (age <= 18) return 'U18';
-  if (age <= 21) return 'U21';
-  if (age <= 35) return 'Adult';
-  if (age <= 50) return 'Masters';
-  return 'Grand Masters';
+  // Use age-based categorization based on the proper cutoffs
+  if (age <= 9) return 'U10';
+  if (age <= 11) return 'U12';
+  if (age <= 13) return 'U14';
+  if (age <= 16) return 'U17/Cadet';
+  if (age <= 20) return 'U21/Junior';
+  if (age >= 40) return 'Over 40';
+  return 'Open/Adult';
 };
 
 export const loadDashboardData = async (file: File): Promise<DashboardData> => {

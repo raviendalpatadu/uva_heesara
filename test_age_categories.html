@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Category Validation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-case { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .valid { background-color: #d4edda; border-color: #c3e6cb; }
+        .invalid { background-color: #f8d7da; border-color: #f5c6cb; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Age Category Validation Test</h1>
+    <p>Testing the updated age category validation logic based on the archery competition rules.</p>
+    
+    <h2>Age Category Cutoffs (Based on Date of Birth)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Date of Birth Range</th>
+                <th>Age Range (approx)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>U10</strong></td>
+                <td>Born on or after 01/01/2015</td>
+                <td>Up to 10 years old</td>
+            </tr>
+            <tr>
+                <td><strong>U12</strong></td>
+                <td>Born between 01/01/2013 and 31/12/2014</td>
+                <td>11-12 years old</td>
+            </tr>
+            <tr>
+                <td><strong>U14</strong></td>
+                <td>Born between 01/01/2011 and 31/12/2012</td>
+                <td>13-14 years old</td>
+            </tr>
+            <tr>
+                <td><strong>U17/Cadet</strong></td>
+                <td>Born between 01/01/2008 and 31/12/2010</td>
+                <td>15-17 years old</td>
+            </tr>
+            <tr>
+                <td><strong>U21/Junior</strong></td>
+                <td>Born between 01/01/2004 and 31/12/2007</td>
+                <td>18-21 years old</td>
+            </tr>
+            <tr>
+                <td><strong>Open/Adult</strong></td>
+                <td>Born between 01/01/1985 and 31/12/2003</td>
+                <td>22-40 years old</td>
+            </tr>
+            <tr>
+                <td><strong>Over 40</strong></td>
+                <td>Born on or before 31/12/1984</td>
+                <td>Over 40 years old</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Sample Test Cases</h2>
+    <div id="test-results"></div>
+
+    <script>
+        // Age category validation function (copied from the updated logic)
+        function getExpectedAgeCategory(dobString) {
+            try {
+                const dob = new Date(dobString);
+                
+                // Age category cutoffs based on the provided table
+                const cutoffs = {
+                    u10Start: new Date('2015-01-01'),      // Born on or after 01/01/2015
+                    u12Start: new Date('2013-01-01'),      // Born between 01/01/2013 and 31/12/2014
+                    u12End: new Date('2014-12-31'),
+                    u14Start: new Date('2011-01-01'),      // Born between 01/01/2011 and 31/12/2012
+                    u14End: new Date('2012-12-31'),
+                    u17Start: new Date('2008-01-01'),      // Born between 01/01/2008 and 31/12/2010
+                    u17End: new Date('2010-12-31'),
+                    u21Start: new Date('2004-01-01'),      // Born between 01/01/2004 and 31/12/2007
+                    u21End: new Date('2007-12-31'),
+                    openStart: new Date('1985-01-01'),     // Born between 01/01/1985 and 31/12/2003
+                    openEnd: new Date('2003-12-31'),
+                    over40End: new Date('1984-12-31'),     // Born on or before 31/12/1984
+                };
+                
+                // U10: Born on or after 01/01/2015
+                if (dob >= cutoffs.u10Start) return 'U10';
+                
+                // U12: Born between 01/01/2013 and 31/12/2014
+                if (dob >= cutoffs.u12Start && dob <= cutoffs.u12End) return 'U12';
+                
+                // U14: Born between 01/01/2011 and 31/12/2012
+                if (dob >= cutoffs.u14Start && dob <= cutoffs.u14End) return 'U14';
+                
+                // U17/Cadet: Born between 01/01/2008 and 31/12/2010
+                if (dob >= cutoffs.u17Start && dob <= cutoffs.u17End) return 'U17/Cadet';
+                
+                // U21/Junior: Born between 01/01/2004 and 31/12/2007
+                if (dob >= cutoffs.u21Start && dob <= cutoffs.u21End) return 'U21/Junior';
+                
+                // Over 40: Born on or before 31/12/1984
+                if (dob <= cutoffs.over40End) return 'Over 40';
+                
+                // Open/Adult: Born between 01/01/1985 and 31/12/2003
+                if (dob >= cutoffs.openStart && dob <= cutoffs.openEnd) return 'Open/Adult';
+                
+                return 'Unknown';
+            } catch (error) {
+                console.warn('Error parsing date:', dobString, error);
+                return 'Unknown';
+            }
+        }
+
+        // Test cases
+        const testCases = [
+            { dob: '2016-06-15', expected: 'U10', description: 'Born in 2016' },
+            { dob: '2015-01-01', expected: 'U10', description: 'Born exactly on U10 cutoff start' },
+            { dob: '2014-12-31', expected: 'U12', description: 'Born exactly on U12 cutoff end' },
+            { dob: '2013-06-15', expected: 'U12', description: 'Born in 2013' },
+            { dob: '2012-06-15', expected: 'U14', description: 'Born in 2012' },
+            { dob: '2011-01-01', expected: 'U14', description: 'Born exactly on U14 cutoff start' },
+            { dob: '2009-06-15', expected: 'U17/Cadet', description: 'Born in 2009' },
+            { dob: '2008-01-01', expected: 'U17/Cadet', description: 'Born exactly on U17 cutoff start' },
+            { dob: '2005-06-15', expected: 'U21/Junior', description: 'Born in 2005' },
+            { dob: '2004-01-01', expected: 'U21/Junior', description: 'Born exactly on U21 cutoff start' },
+            { dob: '1995-06-15', expected: 'Open/Adult', description: 'Born in 1995' },
+            { dob: '1985-01-01', expected: 'Open/Adult', description: 'Born exactly on Open cutoff start' },
+            { dob: '2003-12-31', expected: 'Open/Adult', description: 'Born exactly on Open cutoff end' },
+            { dob: '1984-12-31', expected: 'Over 40', description: 'Born exactly on Over 40 cutoff' },
+            { dob: '1980-06-15', expected: 'Over 40', description: 'Born in 1980' },
+        ];
+
+        // Run tests
+        const resultsDiv = document.getElementById('test-results');
+        testCases.forEach(testCase => {
+            const result = getExpectedAgeCategory(testCase.dob);
+            const isCorrect = result === testCase.expected;
+            
+            const div = document.createElement('div');
+            div.className = `test-case ${isCorrect ? 'valid' : 'invalid'}`;
+            div.innerHTML = `
+                <strong>${testCase.description}</strong><br>
+                DOB: ${testCase.dob}<br>
+                Expected: ${testCase.expected}<br>
+                Got: ${result}<br>
+                Result: ${isCorrect ? '✅ PASS' : '❌ FAIL'}
+            `;
+            resultsDiv.appendChild(div);
+        });
+
+        // Summary
+        const passCount = testCases.filter(tc => getExpectedAgeCategory(tc.dob) === tc.expected).length;
+        const summaryDiv = document.createElement('div');
+        summaryDiv.innerHTML = `<h3>Test Summary: ${passCount}/${testCases.length} tests passed</h3>`;
+        resultsDiv.appendChild(summaryDiv);
+    </script>
+</body>
+</html>
