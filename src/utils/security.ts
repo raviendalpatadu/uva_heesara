@@ -40,7 +40,7 @@ class ConfigManager {
     return {
       apiBaseUrl: '',
       apiKey: this.getApiKeyFromStorage(),
-      allowedOrigins: ['https://*.github.io', 'http://localhost:*', 'http://127.0.0.1:*'],
+      allowedOrigins: ['https://*.github.io', 'http://localhost:*', 'http://127.0.0.1:*', "https://uvaheesara.uvaarchery.lk"],
       environment: 'development',
       enableEncryption: false,
       apiTimeout: 10000,
