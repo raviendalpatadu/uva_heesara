@@ -20,7 +20,7 @@ Go to Repository → Settings → Secrets and variables → Actions
 
 Add these secrets:
 - [ ] **VITE_API_BASE_URL**: `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec`
-- [ ] **VITE_ALLOWED_ORIGINS**: `https://yourusername.github.io`
+- [ ] **VITE_ALLOWED_ORIGINS**: `https://uvaheesara.uvaarchery.lk`
 
 Optional secrets for enhanced security:
 - [ ] **VITE_API_KEY**: Your API key (if implementing custom auth)
@@ -44,7 +44,7 @@ Optional secrets for enhanced security:
 - [ ] Green checkmark appears on the workflow
 
 ### 3. Access Your Dashboard
-Your dashboard will be available at: `https://yourusername.github.io/repository-name`
+Your dashboard will be available at: `https://uvaheesara.uvaarchery.lk`
 
 ## 🔍 Post-Deployment Verification
 

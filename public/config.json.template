@@ -1,7 +1,7 @@
 {
   "apiBaseUrl": "",
   "environment": "production",
-  "allowedOrigins": ["https://yourusername.github.io", "https://uvaheesara.uvaarchery.lk"],
+  "allowedOrigins": ["https://uvaheesara.uvaarchery.lk"],
   "enableEncryption": false,
   "apiTimeout": 10000
 }

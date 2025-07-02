@@ -13,7 +13,7 @@ Go to your repository → Settings → Secrets and variables → Actions
 
 Add these secrets:
 - **VITE_API_BASE_URL**: Your Google Apps Script web app URL
-- **VITE_ALLOWED_ORIGINS**: Your GitHub Pages domain (e.g., `https://yourusername.github.io`)
+- **VITE_ALLOWED_ORIGINS**: Your custom domain (e.g., `https://uvaheesara.uvaarchery.lk`)
 
 ### 2. Enable GitHub Pages
 - Go to Repository → Settings → Pages  
