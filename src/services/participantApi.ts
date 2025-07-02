@@ -9,6 +9,7 @@ export interface ApiParticipant {
   Club: string;
   Event: string;
   ExtraEvent?: string;
+  BowSharing?: string;
 }
 
 export class ParticipantApiService {

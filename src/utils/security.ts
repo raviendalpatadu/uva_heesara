@@ -1,4 +1,6 @@
 // Security configuration and utilities
+import { RuntimeConfigLoader } from './runtimeConfig';
+
 export interface SecurityConfig {
   apiBaseUrl: string;
   apiKey?: string;
@@ -11,27 +13,37 @@ export interface SecurityConfig {
 class ConfigManager {
   private static config: SecurityConfig | null = null;
 
-  static getConfig(): SecurityConfig {
-    this.config ??= this.loadConfig();
+  static async getConfig(): Promise<SecurityConfig> {
+    if (this.config) return this.config;
+    
+    // Load from the centralized runtime config
+    const runtimeConfig = await RuntimeConfigLoader.loadConfig();
+    
+    this.config = {
+      apiBaseUrl: runtimeConfig.apiBaseUrl,
+      apiKey: this.getApiKeyFromStorage(),
+      allowedOrigins: runtimeConfig.allowedOrigins,
+      environment: runtimeConfig.environment,
+      enableEncryption: runtimeConfig.enableEncryption,
+      apiTimeout: runtimeConfig.apiTimeout,
+    };
+    
     return this.config;
   }
 
+  /**
+   * @deprecated Use getConfig() instead for async loading
+   */
   private static loadConfig(): SecurityConfig {
-    // Get environment variables with fallbacks
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 
-      'https://script.google.com/macros/s/AKfycbxjT0SMNe5-a3WqRQtW82QRBahkghJpbw1blqam9kXx3Vsgne0OO54jFG4nSD2NorI/exec';
-    
-    const environment = import.meta.env.VITE_ENVIRONMENT === 'production' ? 'production' : 'development';
-    
+    // Fallback for legacy code - should not be used
+    console.warn('Using deprecated synchronous config loading');
     return {
-      apiBaseUrl,
+      apiBaseUrl: '',
       apiKey: this.getApiKeyFromStorage(),
-      allowedOrigins: import.meta.env.VITE_ALLOWED_ORIGINS ? 
-        import.meta.env.VITE_ALLOWED_ORIGINS.split(',') : 
-        ['https://*.github.io', 'http://localhost:*', 'http://127.0.0.1:*'],
-      environment,
-      enableEncryption: import.meta.env.VITE_ENABLE_API_ENCRYPTION === 'true',
-      apiTimeout: parseInt(import.meta.env.VITE_API_TIMEOUT ?? '10000', 10),
+      allowedOrigins: ['https://*.github.io', 'http://localhost:*', 'http://127.0.0.1:*'],
+      environment: 'development',
+      enableEncryption: false,
+      apiTimeout: 10000,
     };
   }
 
@@ -45,8 +57,8 @@ class ConfigManager {
   }
 
   // Validate current origin against allowed origins
-  static isOriginAllowed(): boolean {
-    const config = this.getConfig();
+  static async isOriginAllowed(): Promise<boolean> {
+    const config = await this.getConfig();
     const currentOrigin = window.location.origin;
 
     // In development, allow all localhost origins
@@ -77,8 +89,8 @@ class ConfigManager {
   }
 
   // Obfuscate API URL (basic security through obscurity)
-  static getObfuscatedApiUrl(): string {
-    const config = this.getConfig();
+  static async getObfuscatedApiUrl(): Promise<string> {
+    const config = await this.getConfig();
     const fingerprint = this.generateRequestFingerprint();
     
     // Add fingerprint as query parameter for basic request tracking
@@ -122,9 +134,9 @@ class RateLimiter {
 
 // Request validator
 class RequestValidator {
-  static validateRequest(): { valid: boolean; reason?: string } {
+  static async validateRequest(): Promise<{ valid: boolean; reason?: string }> {
     // Check origin
-    if (!ConfigManager.isOriginAllowed()) {
+    if (!(await ConfigManager.isOriginAllowed())) {
       return {
         valid: false,
         reason: 'Unauthorized origin. This application is not allowed to access the API from this domain.'

@@ -31,6 +31,15 @@ const EntriesManagement: React.FC<EntriesManagementProps> = ({ archers }) => {
     return eventName.includes('u10') || eventName.includes('u12');
   };
 
+  // Helper function to check if bow sharing is allowed for an event
+  const isBowSharingAllowed = (eventName: string): boolean => {
+    const eventLower = eventName.toLowerCase();
+    return eventLower.includes('u14') || 
+           eventLower.includes('u12') || 
+           eventLower.includes('u10') || 
+           eventLower.includes('beginners open');
+  };
+
   // Helper function to get age cutoff date for event
   const getEventCutoffDate = (eventName: string): Date | null => {
     const eventLower = eventName.toLowerCase();
@@ -126,6 +135,16 @@ const EntriesManagement: React.FC<EntriesManagementProps> = ({ archers }) => {
         }
       }
 
+      // Rule 4: Validate bow sharing is only allowed for permitted events
+      if (archer.bowSharing && archer.bowSharing.trim() !== '') {
+        const primaryAllowed = isBowSharingAllowed(archer.primaryEvent);
+        const extraAllowed = archer.extraEvent ? isBowSharingAllowed(archer.extraEvent) : true;
+        
+        if (!primaryAllowed && !extraAllowed) {
+          validationIssues.push('Bow sharing is only allowed for U14, U12, U10, and Beginners Open events');
+        }
+      }
+
       const isValid = validationIssues.length === 0;
       const fee = hasExtraEvent ? SINGLE_EVENT_FEE + EXTRA_EVENT_FEE : SINGLE_EVENT_FEE;
 
@@ -187,7 +206,6 @@ const EntriesManagement: React.FC<EntriesManagementProps> = ({ archers }) => {
   };
 
   const invalidEntriesByClub = groupByClub(entriesAnalysis.invalidEntries);
-  const validEntriesByClub = groupByClub(entriesAnalysis.validEntries);
 
   return (
     <div className="space-y-6">
@@ -219,6 +237,10 @@ const EntriesManagement: React.FC<EntriesManagementProps> = ({ archers }) => {
             <div className="bg-white p-3 rounded border">
               <div className="font-medium text-gray-900">Age Requirements</div>
               <div className="text-green-600 text-xs">DOB must meet minimum age for registered events</div>
+            </div>
+            <div className="bg-white p-3 rounded border md:col-span-2">
+              <div className="font-medium text-gray-900">Bow Sharing Restrictions</div>
+              <div className="text-orange-600 text-xs">Only allowed for U14, U12, U10, and Beginners Open events</div>
             </div>
           </div>
           
@@ -430,61 +452,7 @@ const EntriesManagement: React.FC<EntriesManagementProps> = ({ archers }) => {
         </div>
       )}
 
-      {/* Valid Entries Summary */}
-      <div className="bg-white rounded-lg shadow-sm border border-green-200">
-        <div className="p-6 border-b border-green-200 bg-green-50">
-          <h3 className="text-lg font-semibold text-green-900 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5" />
-            Valid Registrations ({entriesAnalysis.validCount})
-          </h3>
-          <p className="text-sm text-green-700 mt-1">
-            Club-wise breakdown of valid registrations:
-          </p>
-        </div>
-        
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {validEntriesByClub.map(([clubName, entries]) => (
-              <div key={clubName} className="border border-green-200 rounded-lg p-4 bg-green-50">
-                <h4 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  {clubName}
-                </h4>
-                <div className="text-sm text-green-700">
-                  <div className="flex justify-between">
-                    <span>Participants:</span>
-                    <span className="font-semibold">{entries.length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Single Events:</span>
-                    <span className="font-semibold">
-                      {entries.filter(e => !e.extraEvent).length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Double Events:</span>
-                    <span className="font-semibold">
-                      {entries.filter(e => e.extraEvent).length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-t border-green-300 pt-2 mt-2">
-                    <span>Total Fees:</span>
-                    <span className="font-bold text-green-800">
-                      {formatCurrency(entries.reduce((sum, e) => sum + e.fee, 0))}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {validEntriesByClub.length === 0 && (
-            <div className="text-center text-gray-500 py-8">
-              No valid entries found
-            </div>
-          )}
-        </div>
-      </div>
+      
     </div>
   );
 };

@@ -20,8 +20,7 @@ export class DataTransformer {
       club: apiParticipant.Club.trim(),
       primaryEvent: apiParticipant.Event.trim(),
       extraEvent: apiParticipant.ExtraEvent?.trim() ?? undefined,
-      // Default values - can be customized later
-      bowSharing: undefined,
+      bowSharing: apiParticipant.BowSharing?.trim() ?? undefined,
       distance: age && age <= 18 ? '30m' : '70m',
     };
   }
@@ -47,7 +46,8 @@ export class DataTransformer {
       (typeof participant.Contact === 'string' || typeof participant.Contact === 'number') &&
       typeof participant.Club === 'string' &&
       typeof participant.Event === 'string' &&
-      (participant.ExtraEvent === undefined || typeof participant.ExtraEvent === 'string')
+      (participant.ExtraEvent === undefined || typeof participant.ExtraEvent === 'string') &&
+      (participant.BowSharing === undefined || typeof participant.BowSharing === 'string')
     );
   }
 

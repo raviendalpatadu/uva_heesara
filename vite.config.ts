@@ -15,9 +15,6 @@ export default defineConfig({
     sourcemap: false, // Disable sourcemaps for production to prevent API exposure
     minify: 'terser',
   },
-  define: {
-    // Ensure environment variables are properly defined
-    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.VITE_API_BASE_URL),
-    'import.meta.env.VITE_ENVIRONMENT': JSON.stringify(process.env.VITE_ENVIRONMENT ?? 'development'),
-  },
+  // Remove manual define - let Vite handle environment variables automatically
+  // Vite will automatically load .env.local, .env.development, etc.
 })

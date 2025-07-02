@@ -92,8 +92,14 @@ class RuntimeConfigLoader {
       return null;
     }
 
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    
+    if (!apiBaseUrl) {
+      return null;
+    }
+
     return {
-      apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? '',
+      apiBaseUrl,
       environment: 'development',
       allowedOrigins: ['http://localhost:*', 'http://127.0.0.1:*'],
       enableEncryption: false,
