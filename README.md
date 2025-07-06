@@ -1,12 +1,33 @@
 # UVA HEESARA Open Archery Championship - Entries Dashboard
 
-A modern, responsive dashboard application for managing and viewing participant entries for the UVA HEESARA Open Archery Championship 2025.
+A modern, responsive dashboard application with **protected admin access** and **public participant viewing** for the UVA HEESARA Open Archery Championship 2025.
 
 ![UVA HEESARA Logo](./public/data/AR2fclrsBl2.png)
 
+## 🌐 **Live Application**
+**URL**: [https://uvaheesara.uvaarchery.lk](https://uvaheesara.uvaarchery.lk)
+
+### 🔓 **Public Access**
+- View participant details
+- Search and filter participants
+- No authentication required
+- Auto-refreshes every 5 minutes
+
+### 🔐 **Admin Dashboard** 
+- **Protected access** with login credentials
+- Full analytics and statistics
+- Entry fees analysis
+- Entries management tools
+- 24-hour secure sessions
+
+**Default Admin Credentials** (change in production):
+- `admin` / `UVA2025!Admin`
+- `heesara` / `Heesara2025!`
+- `archery` / `Archery2025!`
+
 ## 🚀 Quick Deployment to GitHub Pages
 
-This dashboard is now configured with security measures to protect API endpoints. 
+This dashboard features a dual-access system with security measures to protect sensitive data. 
 
 ### 1. Configure GitHub Secrets
 Go to your repository → Settings → Secrets and variables → Actions
@@ -22,11 +43,15 @@ Add these secrets:
 ### 3. Push to main branch
 The GitHub Action will automatically build and deploy securely.
 
-## 🔒 Security Features
+## 🔒 Security & Access Features
 
+✅ **Dual Access System**: Public view + Protected admin dashboard  
+✅ **Authentication**: Secure login with session management  
 ✅ **Environment Variables**: API endpoints stored securely  
 ✅ **Origin Validation**: Only approved domains can access the API  
 ✅ **Rate Limiting**: Prevents API abuse (10 requests/minute)  
+✅ **Session Security**: 24-hour sessions with auto-logout  
+✅ **Protected Routes**: Admin features require authentication
 ✅ **Request Obfuscation**: Makes API calls less obvious  
 ✅ **Production Hardening**: Removes debug info and source maps  
 

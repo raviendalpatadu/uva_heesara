@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, ChevronDown, ChevronUp, ChevronRight, X, Filter, FilterX } from 'lucide-react';
 import {
   useReactTable,
@@ -15,6 +15,7 @@ import type { Archer } from '../types';
 
 interface ParticipantsTableProps {
   archers: Archer[];
+  isPublicView?: boolean;
 }
 
 // Declare module augmentation for meta property
@@ -24,15 +25,12 @@ declare module '@tanstack/react-table' {
   }
 }
 
-const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
+const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers, isPublicView = false }) => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [isMobileFilterCollapsed, setIsMobileFilterCollapsed] = useState(true);
-  
-  // Separate state for event filter to avoid conflicts with TanStack Table
-  const [eventFilter, setEventFilterState] = useState('all');
 
   // Define columns
   const columns = useMemo<ColumnDef<Archer>[]>(() => [
@@ -44,6 +42,12 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
           {getValue()}
         </div>
       ),
+      // Custom sorting for names (case-insensitive)
+      sortingFn: (rowA, rowB, columnId) => {
+        const a = rowA.getValue(columnId) as string;
+        const b = rowB.getValue(columnId) as string;
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      },
     },
     {
       accessorKey: 'gender',
@@ -64,12 +68,31 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
         // console.log(`Gender filter: "${cellValue}" === "${value}" = ${result}`);
         return result;
       },
+      // Custom sorting for gender (Female first, then Male)
+      sortingFn: (rowA, rowB, columnId) => {
+        const a = rowA.getValue(columnId) as string;
+        const b = rowB.getValue(columnId) as string;
+        if (a === 'Female' && b === 'Male') return -1;
+        if (a === 'Male' && b === 'Female') return 1;
+        return 0;
+      },
       meta: { className: 'hidden sm:table-cell' },
     },
     {
       accessorKey: 'age',
       header: 'Age',
       cell: ({ getValue }: any) => getValue() ?? 'N/A',
+      // Custom sorting for age (handle null/undefined values)
+      sortingFn: (rowA, rowB, columnId) => {
+        const a = rowA.getValue(columnId) as number | null;
+        const b = rowB.getValue(columnId) as number | null;
+        
+        // Handle null/undefined values (put them at the end)
+        if (a === null || a === undefined) return 1;
+        if (b === null || b === undefined) return -1;
+        
+        return a - b;
+      },
       meta: { className: 'hidden sm:table-cell' },
     },
     {
@@ -87,6 +110,12 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
         const result = cellValue.toString().trim() === value.toString().trim();
         return result;
       },
+      // Custom sorting for club (case-insensitive)
+      sortingFn: (rowA, rowB, columnId) => {
+        const a = rowA.getValue(columnId) as string;
+        const b = rowB.getValue(columnId) as string;
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      },
     },
     {
       accessorKey: 'primaryEvent',
@@ -103,12 +132,35 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
           )}
         </div>
       ),
-      // Remove the custom filterFn for now - let's use a different approach
+      // Custom sorting for primary event (case-insensitive)
+      sortingFn: (rowA, rowB, columnId) => {
+        const a = rowA.getValue(columnId) as string;
+        const b = rowB.getValue(columnId) as string;
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      },
+      // Custom filter function for events (checks both primary and extra)
+      filterFn: (row, columnId, value) => {
+        const archer = row.original as Archer;
+        const primaryMatch = archer.primaryEvent === value;
+        const extraMatch = archer.extraEvent && archer.extraEvent.trim() !== '' && archer.extraEvent === value;
+        return primaryMatch || extraMatch;
+      },
     },
     {
       accessorKey: 'contact',
       header: 'Contact',
       cell: ({ getValue }: any) => getValue() ?? 'N/A',
+      // Custom sorting for contact (case-insensitive, handle null values)
+      sortingFn: (rowA, rowB, columnId) => {
+        const a = rowA.getValue(columnId) as string | null;
+        const b = rowB.getValue(columnId) as string | null;
+        
+        // Handle null/undefined values (put them at the end)
+        if (!a) return 1;
+        if (!b) return -1;
+        
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      },
       meta: { className: 'hidden sm:table-cell' },
     },
   ], []);
@@ -138,29 +190,13 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
     return clubs.filter(club => club && club.trim() !== '').sort();
   }, [archers]);
 
-  // Apply manual filtering for events (since we need to check both primary and extra events)
-  const filteredData = useMemo(() => {
-    let filtered = [...archers];
-
-    // Apply event filter manually using separate state
-    if (eventFilter && eventFilter !== 'all') {
-      filtered = filtered.filter(archer => {
-        const primaryMatch = archer.primaryEvent === eventFilter;
-        const extraMatch = archer.extraEvent && archer.extraEvent.trim() !== '' && archer.extraEvent === eventFilter;
-        return primaryMatch || extraMatch;
-      });
-    }
-
-    return filtered;
-  }, [archers, eventFilter]); // Only depend on eventFilter, not columnFilters
-
   // Configure table
   const table = useReactTable({
-    data: filteredData, // Use manually filtered data
+    data: archers, // Use original data, let TanStack Table handle all filtering
     columns,
     state: {
       globalFilter,
-      columnFilters, // Keep all column filters as they are
+      columnFilters,
       sorting,
     },
     onGlobalFilterChange: setGlobalFilter,
@@ -189,6 +225,11 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
         field && field.toString().toLowerCase().includes(searchValue)
       );
     },
+    // Enable sorting for all columns by default
+    enableSorting: true,
+    // Enable multi-column sorting
+    enableMultiSort: true,
+    // Set default sorting - remove this to let user control sorting
     initialState: {
       pagination: {
         pageSize: 25,
@@ -204,7 +245,8 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
 
   // Helper function to get event filter value
   const getEventFilter = () => {
-    return eventFilter;
+    const eventFilter = columnFilters.find(filter => filter.id === 'primaryEvent');
+    return eventFilter?.value as string ?? 'all';
   };
 
   // Helper function to get club filter value
@@ -227,7 +269,15 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
 
   // Update event filter
   const setEventFilter = (value: string) => {
-    setEventFilterState(value);
+    // Update the column filters for proper integration
+    if (value === 'all') {
+      setColumnFilters(prev => prev.filter(filter => filter.id !== 'primaryEvent'));
+    } else {
+      setColumnFilters(prev => [
+        ...prev.filter(filter => filter.id !== 'primaryEvent'),
+        { id: 'primaryEvent', value }
+      ]);
+    }
   };
 
   // Update club filter
@@ -263,11 +313,21 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
            globalFilter.trim() !== '';
   };
 
-  // Debug: Monitor column filters changes (commented out for production)
+  // Debug: Monitor sorting changes (commented out for production)
   // useEffect(() => {
-  //   console.log('Column filters changed:', columnFilters);
-  //   console.log('Filtered rows count:', table.getFilteredRowModel().rows.length);
-  // }, [columnFilters, table]);
+  //   console.log('Sorting state changed:', sorting);
+  //   console.log('Total rows:', table.getCoreRowModel().rows.length);
+  //   console.log('Filtered rows:', table.getFilteredRowModel().rows.length);
+  //   console.log('Final rows:', table.getRowModel().rows.length);
+  //   if (sorting.length > 0) {
+  //     console.log('First few sorted rows:', table.getRowModel().rows.slice(0, 3).map(row => ({
+  //       id: row.id,
+  //       name: row.original.name,
+  //       sortColumn: sorting[0].id,
+  //       sortValue: row.getValue(sorting[0].id)
+  //     })));
+  //   }
+  // }, [sorting, table]);
 
   return (
     <div className="participants-container">
@@ -278,7 +338,7 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
             {/* Title and Main Actions */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <h3 className="chart-title">
-                Participants ({table.getFilteredRowModel().rows.length})
+                {isPublicView ? 'Tournament Participants' : 'Participants'} ({table.getFilteredRowModel().rows.length})
               </h3>
               
               {hasActiveFilters() && (
@@ -688,6 +748,8 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
                       key={header.id}
                       className={`table-header text-left cursor-pointer hover:bg-gray-50 ${
                         header.column.columnDef.meta?.className ?? ''
+                      } ${
+                        header.column.getCanSort() ? 'select-none' : ''
                       }`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
@@ -695,11 +757,21 @@ const ParticipantsTable: React.FC<ParticipantsTableProps> = ({ archers }) => {
                         <span>
                           {flexRender(header.column.columnDef.header, header.getContext())}
                         </span>
-                        {header.column.getIsSorted() === 'asc' && (
-                          <ChevronUp className="w-4 h-4" />
-                        )}
-                        {header.column.getIsSorted() === 'desc' && (
-                          <ChevronDown className="w-4 h-4" />
+                        {header.column.getCanSort() && (
+                          <div className="inline-flex flex-col">
+                            {header.column.getIsSorted() === 'asc' && (
+                              <ChevronUp className="w-4 h-4 text-blue-600" />
+                            )}
+                            {header.column.getIsSorted() === 'desc' && (
+                              <ChevronDown className="w-4 h-4 text-blue-600" />
+                            )}
+                            {!header.column.getIsSorted() && (
+                              <div className="w-4 h-4 opacity-30 flex items-center justify-center">
+                                <ChevronUp className="w-3 h-3 absolute" />
+                                <ChevronDown className="w-3 h-3 absolute translate-y-1" />
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     </th>
