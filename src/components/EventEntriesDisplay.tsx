@@ -186,8 +186,8 @@ const EventEntriesDisplay: React.FC<EventEntriesDisplayProps> = ({ archers }) =>
                                   </div>
                                   <div className="text-right">
                                     <div className="text-xs text-gray-400">#{index + 1}</div>
-                                    {archer.age && (
-                                      <div className="text-xs text-gray-500">{archer.age} years</div>
+                                    {archer.dateOfBirth && (
+                                      <div className="text-xs text-gray-500">{archer.dateOfBirth}</div>
                                     )}
                                   </div>
                                 </div>
@@ -216,8 +216,10 @@ const EventEntriesDisplay: React.FC<EventEntriesDisplayProps> = ({ archers }) =>
                                   </div>
                                   <div className="text-right">
                                     <div className="text-xs text-gray-400">#{index + 1}</div>
-                                    {archer.age && (
-                                      <div className="text-xs text-gray-500">{archer.age} years</div>
+                                    {archer.dateOfBirth && (
+                                      <div className="text-xs text-gray-500">
+                                        {archer.dateOfBirth}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
