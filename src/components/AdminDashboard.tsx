@@ -79,7 +79,9 @@ const AdminDashboard: React.FC = () => {
       await logout();
     } catch (error) {
       console.error('Logout failed:', error);
-      // Force redirect even if logout fails
+      // Clear any local storage and force redirect even if logout fails
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = '/';
     }
   }, [logout]);

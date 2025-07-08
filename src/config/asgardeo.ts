@@ -48,7 +48,7 @@ export const getAsgardeoConfig = (): AuthReactConfig => {
     return {
       ...asgardeoConfig,
       signInRedirectURL: `https://${envConfig.productionDomain}/admin`,
-      signOutRedirectURL: `https://${envConfig.productionDomain}`,
+      signOutRedirectURL: `https://${envConfig.productionDomain}/`,
     };
   }
   
@@ -56,6 +56,6 @@ export const getAsgardeoConfig = (): AuthReactConfig => {
   return {
     ...asgardeoConfig,
     signInRedirectURL: `https://${envConfig.productionDomain}/admin`,
-    signOutRedirectURL: `https://${envConfig.productionDomain}`,
+    signOutRedirectURL: `https://${envConfig.productionDomain}/`,
   };
 };
