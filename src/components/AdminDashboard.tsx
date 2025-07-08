@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BarChart3, Calculator, Users, Menu, X, Shield } from 'lucide-react';
 import Header from './Header';
@@ -69,12 +69,12 @@ const AdminDashboard: React.FC = () => {
     refetch();
   };
 
-  const handleNavigation = (page: PageView) => {
+  const handleNavigation = useCallback((page: PageView) => {
     setCurrentPage(page);
     setIsMobileMenuOpen(false);
-  };
+  }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logout();
     } catch (error) {
@@ -82,13 +82,13 @@ const AdminDashboard: React.FC = () => {
       // Force redirect even if logout fails
       window.location.href = '/';
     }
-  };
+  }, [logout]);
 
-  const navigationItems = [
+  const navigationItems = useMemo(() => [
     { id: 'dashboard' as PageView, label: 'Dashboard', icon: BarChart3 },
     { id: 'fees' as PageView, label: 'Entry Fees Analysis', icon: Calculator },
     { id: 'entries' as PageView, label: 'Entries Management', icon: Users },
-  ];
+  ], []);
 
   // Memoize statistics to prevent unnecessary re-renders
   const memoizedStatistics = useMemo(() => {

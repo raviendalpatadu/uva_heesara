@@ -1,5 +1,6 @@
 // Authentication utility using Asgardeo OAuth2/OIDC
 import { useAuthContext } from '@asgardeo/auth-react';
+import { useCallback } from 'react';
 
 export interface AuthState {
   isAuthenticated: boolean;
@@ -18,34 +19,34 @@ export const useAuth = () => {
     getAccessToken 
   } = useAuthContext();
 
-  const login = async () => {
+  const login = useCallback(async () => {
     try {
       await signIn();
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
     }
-  };
+  }, [signIn]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await signOut();
     } catch (error) {
       console.error('Logout failed:', error);
       throw error;
     }
-  };
+  }, [signOut]);
 
-  const getUserInfo = async () => {
+  const getUserInfo = useCallback(async () => {
     try {
       return await getBasicUserInfo();
     } catch (error) {
       console.error('Failed to get user info:', error);
       return null;
     }
-  };
+  }, [getBasicUserInfo]);
 
-  const getTokens = async () => {
+  const getTokens = useCallback(async () => {
     try {
       const [idToken, accessToken] = await Promise.all([
         getIDToken(),
@@ -56,7 +57,7 @@ export const useAuth = () => {
       console.error('Failed to get tokens:', error);
       return { idToken: null, accessToken: null };
     }
-  };
+  }, [getIDToken, getAccessToken]);
 
   return {
     isAuthenticated: state.isAuthenticated,

@@ -73,19 +73,6 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             )}
             
-            {/* Admin Access Button (Public View Only) */}
-            {isPublicView && (
-              <Link
-                to="/admin"
-                className="btn-secondary flex items-center justify-center space-x-2 mobile-full-width touch-target hover:bg-gray-100 order-2 sm:order-none"
-                title="Access admin dashboard"
-              >
-                <Shield className="w-4 h-4" />
-                <span className="hidden sm:inline">Admin Access</span>
-                <span className="sm:hidden">Admin</span>
-              </Link>
-            )}
-            
             <button
               onClick={onRefresh}
               disabled={isLoading}

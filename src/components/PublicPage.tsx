@@ -1,8 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
 import Header from './Header';
-import ParticipantsTable from './ParticipantsTable';
+import EventEntriesDisplay from './EventEntriesDisplay';
 import { PageLoading } from './Loading';
 import { loadApiData } from '../utils/dataProcessor';
 
@@ -72,31 +71,9 @@ const PublicPage: React.FC = () => {
       />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Public View Notice */}
-        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-sm font-medium text-blue-800">
-                Public View - Participant Information
-              </span>
-            </div>
-            <Link
-              to="/admin"
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Admin Access →
-            </Link>
-          </div>
-          <p className="text-sm text-blue-700 mt-1">
-            Viewing participant details for UVA HEESARA 2025. Data refreshes automatically every 5 minutes.
-          </p>
-        </div>
-
-        {/* Participants Table - Public View */}
-        <ParticipantsTable 
+        {/* Event Entries Display - Public View */}
+        <EventEntriesDisplay 
           archers={dashboardData.archers} 
-          isPublicView={true}
         />
       </main>
     </div>
