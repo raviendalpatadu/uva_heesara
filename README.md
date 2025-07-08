@@ -1,6 +1,6 @@
-# UVA HEESARA Open Archery Championship - Entries Dashboard
+# UVA HEESARA Open Archery Championship - Tournament Dashboard
 
-A modern, responsive dashboard application with **protected admin access** and **public participant viewing** for the UVA HEESARA Open Archery Championship 2025.
+A modern, responsive dashboard application with **Asgardeo authentication** and **public event viewing** for the UVA HEESARA Open Archery Championship 2025.
 
 ![UVA HEESARA Logo](./public/data/AR2fclrsBl2.png)
 
@@ -8,46 +8,45 @@ A modern, responsive dashboard application with **protected admin access** and *
 **URL**: [https://uvaheesara.uvaarchery.lk](https://uvaheesara.uvaarchery.lk)
 
 ### 🔓 **Public Access**
-- View participant details
-- Search and filter participants
+- View event entries organized by event and gender
 - No authentication required
 - Auto-refreshes every 5 minutes
+- Mobile-responsive design
 
-### 🔐 **Admin Dashboard** 
-- **Protected access** with login credentials
-- Full analytics and statistics
-- Entry fees analysis
-- Entries management tools
-- 24-hour secure sessions
+### 🔐 **Admin Dashboard** (/admin)
+- **Asgardeo authentication** required
+- Full participant table with advanced filtering
+- Analytics and statistics
+- Entry management tools
+- Secure session management
 
-**Default Admin Credentials** (change in production):
-- `admin` / `UVA2025!Admin`
-- `heesara` / `Heesara2025!`
-- `archery` / `Archery2025!`
+## 🚀 Secure Production Deployment
 
-## 🚀 Quick Deployment to GitHub Pages
+This dashboard uses **Asgardeo** for authentication and is deployed to **uvaheesara.uvaarchery.lk**.
 
-This dashboard features a dual-access system with security measures to protect sensitive data. 
+### 📋 **Quick Start for Deployment**
 
-### 1. Configure GitHub Secrets
-Go to your repository → Settings → Secrets and variables → Actions
+1. **Configure GitHub Secrets** (Repository → Settings → Secrets)
+   ```
+   VITE_API_BASE_URL=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
+   VITE_ASGARDEO_CLIENT_ID=your-asgardeo-client-id
+   VITE_ASGARDEO_BASE_URL=https://api.asgardeo.io/t/your-organization
+   ```
 
-Add these secrets:
-- **VITE_API_BASE_URL**: Your Google Apps Script web app URL
-- **VITE_ALLOWED_ORIGINS**: Your custom domain (e.g., `https://uvaheesara.uvaarchery.lk`)
+2. **Set Custom Domain in GitHub Pages**
+   - Enable GitHub Pages with GitHub Actions source
+   - Set custom domain: `uvaheesara.uvaarchery.lk`
+   - Enforce HTTPS
 
-### 2. Enable GitHub Pages
-- Go to Repository → Settings → Pages  
-- Source: "GitHub Actions"
+3. **Deploy**
+   ```bash
+   git push origin main
+   ```
 
-### 3. Push to main branch
-The GitHub Action will automatically build and deploy securely.
-
-## 🔒 Security & Access Features
-
-✅ **Dual Access System**: Public view + Protected admin dashboard  
-✅ **Authentication**: Secure login with session management  
-✅ **Environment Variables**: API endpoints stored securely  
+### 📚 **Deployment Documentation**
+- 📖 [Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)
+- 🔒 [Security Checklist](./PRODUCTION_SECURITY_CHECKLIST.md)
+- 🛡️ [Security Configuration](./SECURITY.md)  
 ✅ **Origin Validation**: Only approved domains can access the API  
 ✅ **Rate Limiting**: Prevents API abuse (10 requests/minute)  
 ✅ **Session Security**: 24-hour sessions with auto-logout  

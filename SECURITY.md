@@ -22,7 +22,8 @@ This document outlines the security measures implemented for the UVA HEESARA Das
 ### 3. Origin Validation
 - **Allowed Origins**: Restricts API access to approved domains
 - **Development Mode**: Allows localhost/127.0.0.1 for development
-- **Production Mode**: Only allows the specific deployed domain
+- **Production Mode**: Only allows uvaheesara.uvaarchery.lk domain
+- **Multi-Domain Support**: Can be configured for multiple production domains
 
 ### 4. Rate Limiting & Abuse Prevention
 - **Request Throttling**: Limits to 10 requests per minute per client

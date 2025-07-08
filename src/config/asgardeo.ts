@@ -3,9 +3,10 @@ import type { AuthReactConfig } from '@asgardeo/auth-react';
 
 // Get configuration from environment variables or fallbacks (memoized)
 const envConfig = {
-  clientID: import.meta.env.VITE_ASGARDEO_CLIENT_ID ?? 'J_fLYRo81eoG3tG_hU3kVRScNs8a',
-  baseUrl: import.meta.env.VITE_ASGARDEO_BASE_URL ?? 'https://api.asgardeo.io/t/mytestorg12',
-  redirectURL: import.meta.env.VITE_ASGARDEO_REDIRECT_URL ?? window.location.origin
+  clientID: import.meta.env.VITE_ASGARDEO_CLIENT_ID ?? 'your-asgardeo-client-id',
+  baseUrl: import.meta.env.VITE_ASGARDEO_BASE_URL ?? 'https://api.asgardeo.io/t/your-organization',
+  redirectURL: import.meta.env.VITE_ASGARDEO_REDIRECT_URL ?? window.location.origin,
+  productionDomain: import.meta.env.VITE_PRODUCTION_DOMAIN ?? 'uvaheesara.uvaarchery.lk'
 };
 
 export const asgardeoConfig: AuthReactConfig = {
@@ -27,31 +28,34 @@ export const asgardeoConfig: AuthReactConfig = {
   clockTolerance: 300
 };
 
-// Development configuration (for localhost testing)
-export const asgardeoDevConfig: AuthReactConfig = {
-  ...asgardeoConfig,
-  signInRedirectURL: 'http://127.0.0.1:3000/',
-  signOutRedirectURL: 'http://127.0.0.1:3000/',
-};
-
 // Get configuration based on environment
 export const getAsgardeoConfig = (): AuthReactConfig => {
   const isLocalhost = window.location.hostname === 'localhost' || 
                      window.location.hostname === '127.0.0.1';
   
+  const isProduction = window.location.hostname === envConfig.productionDomain;
+  
   // Use environment-specific redirect URLs
   if (isLocalhost) {
     return {
       ...asgardeoConfig,
-      signInRedirectURL: 'http://127.0.0.1:3000/admin',
-      signOutRedirectURL: 'http://127.0.0.1:3000/',
+      signInRedirectURL: `${window.location.origin}/admin`,
+      signOutRedirectURL: window.location.origin,
     };
   }
   
-  // For production, redirect to admin after authentication
+  if (isProduction) {
+    return {
+      ...asgardeoConfig,
+      signInRedirectURL: `https://${envConfig.productionDomain}/admin`,
+      signOutRedirectURL: `https://${envConfig.productionDomain}`,
+    };
+  }
+  
+  // Default production configuration
   return {
     ...asgardeoConfig,
-    signInRedirectURL: 'https://uvaheesara.uvaarchery.lk/admin',
-    signOutRedirectURL: 'https://uvaheesara.uvaarchery.lk/',
+    signInRedirectURL: `https://${envConfig.productionDomain}/admin`,
+    signOutRedirectURL: `https://${envConfig.productionDomain}`,
   };
 };
