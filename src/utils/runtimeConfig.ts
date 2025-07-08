@@ -16,7 +16,7 @@ class RuntimeConfigLoader {
    */
   static async loadConfig(): Promise<RuntimeConfig> {
     if (this.config) return this.config;
-    if (this.configPromise) return this.configPromise;
+    if (this.configPromise) return await this.configPromise;
 
     this.configPromise = this.fetchRuntimeConfig();
     this.config = await this.configPromise;
@@ -26,9 +26,9 @@ class RuntimeConfigLoader {
   private static async fetchRuntimeConfig(): Promise<RuntimeConfig> {
     // Try to load from multiple sources in order of preference
     const sources = [
+      () => this.loadFromEnvironment(), // Always try environment first (GitHub secrets in production)
       () => this.loadFromConfigEndpoint(),
       () => this.loadFromLocalStorage(),
-      () => this.loadFromEnvironment(),
       () => this.loadFromDefaults(),
     ];
 
@@ -83,63 +83,45 @@ class RuntimeConfigLoader {
   }
 
   /**
-   * Load from environment variables (development only)
+   * Load from environment variables (works in both development and production)
    */
   private static async loadFromEnvironment(): Promise<RuntimeConfig | null> {
-    // Only use env vars in development
-    if (window.location.hostname !== 'localhost' && 
-        window.location.hostname !== '127.0.0.1') {
-      return null;
-    }
-
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     
     if (!apiBaseUrl) {
+      console.log('No VITE_API_BASE_URL found in environment variables');
       return null;
+    }
+
+    const isProduction = import.meta.env.VITE_ENVIRONMENT === 'production' || 
+                        import.meta.env.PROD ||
+                        (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1');
+
+    let allowedOrigins: string[];
+    if (import.meta.env.VITE_ALLOWED_ORIGINS) {
+      allowedOrigins = import.meta.env.VITE_ALLOWED_ORIGINS.split(',').map(origin => origin.trim());
+    } else if (isProduction) {
+      allowedOrigins = [window.location.origin];
+    } else {
+      allowedOrigins = ['http://localhost:*', 'http://127.0.0.1:*', window.location.origin];
     }
 
     return {
       apiBaseUrl,
-      environment: 'development',
-      allowedOrigins: ['http://localhost:*', 'http://127.0.0.1:*'],
-      enableEncryption: false,
-      apiTimeout: 10000,
+      environment: isProduction ? 'production' : 'development',
+      allowedOrigins,
+      enableEncryption: import.meta.env.VITE_ENABLE_API_ENCRYPTION === 'true',
+      apiTimeout: parseInt(import.meta.env.VITE_API_TIMEOUT ?? '10000'),
     };
   }
 
   /**
-   * Load default configuration (fallback)
+   * Load default configuration (fallback) - No longer prompts user
    */
   private static async loadFromDefaults(): Promise<RuntimeConfig> {
-    // Show configuration dialog if no config is found
-    return this.promptForConfiguration();
-  }
-
-  /**
-   * Prompt user to provide configuration
-   */
-  private static async promptForConfiguration(): Promise<RuntimeConfig> {
-    const apiUrl = prompt(
-      'Please enter your Google Apps Script URL:\n\n' +
-      'Go to script.google.com, deploy your script as a web app, and paste the URL here.'
+    throw new Error(
+      'Configuration not found. Please ensure VITE_API_BASE_URL is set in your environment variables or GitHub secrets.'
     );
-
-    if (!apiUrl) {
-      throw new Error('Configuration required to proceed');
-    }
-
-    const config: RuntimeConfig = {
-      apiBaseUrl: apiUrl,
-      environment: 'production',
-      allowedOrigins: [window.location.origin],
-      enableEncryption: false,
-      apiTimeout: 10000,
-    };
-
-    // Save to localStorage for future use
-    localStorage.setItem('uva_heesara_config', JSON.stringify(config));
-
-    return config;
   }
 
   /**

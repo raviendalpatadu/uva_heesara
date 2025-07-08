@@ -3,6 +3,15 @@
 
 This guide provides step-by-step instructions for securely deploying the UVA Heesara Tournament Dashboard to production on `uvaheesara.uvaarchery.lk`.
 
+## ⚡ **New Simplified Configuration**
+
+**No Manual Configuration Required!** The application now automatically loads configuration from:
+1. Environment variables (GitHub Secrets in production)
+2. Local storage (fallback)
+3. Clear error messages if configuration is missing
+
+**No more configuration dialogs** - just set your GitHub Secrets and deploy!
+
 ## 🔒 Security Checklist
 
 ### Before Deployment
