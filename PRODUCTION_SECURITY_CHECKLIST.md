@@ -46,6 +46,12 @@ VITE_ASGARDEO_BASE_URL=https://api.asgardeo.io/t/your-production-organization
 
 **⚠️ Never commit these values to your code!**
 
+**✅ How It Works:**
+- GitHub Actions uses these secrets during build
+- Creates a `config.json` file with the configuration
+- The deployed app loads configuration from `config.json`
+- No secrets are exposed in the client-side code
+
 ## 🌐 DNS and Domain Configuration
 
 ### DNS Settings for uvaheesara.uvaarchery.lk
