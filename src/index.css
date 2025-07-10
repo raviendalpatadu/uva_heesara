@@ -69,6 +69,32 @@
     @apply opacity-0 translate-y-[-8px] transition-all duration-150 ease-in;
   }
 
+  /* Mobile-friendly touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+  }
+  
+  /* Mobile-optimized tab styles */
+  .mobile-tab {
+    @apply touch-manipulation select-none active:scale-95;
+  }
+  
+  /* Smooth scrolling for mobile */
+  .mobile-scroll {
+    @apply overflow-x-auto scroll-smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .mobile-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Improved mobile card styles */
+  .mobile-card {
+    @apply transform transition-transform duration-150 active:scale-[0.98];
+  }
+
   /* Responsive navigation styles */
   .nav-item-active {
     @apply border-tournament-blue text-tournament-blue;

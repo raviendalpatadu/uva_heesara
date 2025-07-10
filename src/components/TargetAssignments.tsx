@@ -109,76 +109,48 @@ const TargetAssignments: React.FC<TargetAssignmentsProps> = ({ apiBaseUrl }) => 
   }
 
   const events = Object.keys(targetData);
-  const totalAssignments = Object.values(targetData).reduce((sum, assignments) => sum + assignments.length, 0);
-
+ 
   return (
     <div className="space-y-6">
-      {/* Day Selection Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
+      {/* Day Selection Tabs - Mobile Optimized */}
+      <div className="border-b border-gray-200 overflow-x-auto">
+        <nav className="-mb-px flex min-w-max sm:min-w-0">
           {(['day1', 'day2', 'day3'] as const).map((day) => (
             <button
               key={day}
               onClick={() => setSelectedDay(day)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 py-3 px-2 border-b-2 font-medium text-sm transition-colors duration-200 touch-manipulation select-none active:scale-95 ${
                 selectedDay === day
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4" />
-                <span>{getDayLabel(day)}</span>
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Clock className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{getDayLabel(day)}</span>
               </div>
             </button>
           ))}
         </nav>
       </div>
 
-      {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100 text-sm font-medium">{getDayLabel(selectedDay)} Events</p>
-              <p className="text-3xl font-bold">{events.length}</p>
-            </div>
-            <Target className="w-8 h-8 text-purple-200" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-100 text-sm font-medium">Total Assignments</p>
-              <p className="text-3xl font-bold">{totalAssignments}</p>
-            </div>
-            <Users className="w-8 h-8 text-orange-200" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-indigo-100 text-sm font-medium">Selected Day</p>
-              <p className="text-3xl font-bold">{getDayLabel(selectedDay)}</p>
-            </div>
-            <Clock className="w-8 h-8 text-indigo-200" />
-          </div>
-        </div>
-      </div>
-
-      {/* Events List */}
-      <div className="space-y-4">
+      {/* Events List - Mobile Optimized */}
+      <div className="space-y-3 sm:space-y-4">
         {events.length === 0 ? (
-          <div className="text-center py-8">
-            <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="text-center py-12 px-4">
+            <Target className="w-16 h-16 sm:w-20 sm:h-20 text-gray-300 mx-auto mb-6" />
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
               No Target Assignments Available
             </h3>
-            <p className="text-gray-600">
-              No target assignments found for {getDayLabel(selectedDay)}.
+            <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+              No target assignments found for {getDayLabel(selectedDay)}. Please check back later or try a different day.
             </p>
+            <button 
+              onClick={() => refetch()}
+              className="mt-6 btn-primary"
+            >
+              Refresh
+            </button>
           </div>
         ) : (
           events.map((eventName) => {
@@ -203,18 +175,18 @@ const TargetAssignments: React.FC<TargetAssignmentsProps> = ({ apiBaseUrl }) => 
               <div key={eventName} className="bg-white rounded-lg shadow-sm border border-gray-200">
                 <button
                   onClick={() => toggleEventExpansion(eventName)}
-                  className="w-full px-6 py-4 text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                  className="w-full p-4 sm:px-6 sm:py-4 text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200 touch-manipulation active:scale-[0.98]"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Target className="w-5 h-5 text-blue-500" />
-                      <h3 className="text-lg font-semibold text-gray-900">{eventName}</h3>
-                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">
-                        {assignments.length} archers
+                    <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                      <Target className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" />
+                      <h3 className="text-sm sm:text-lg font-semibold text-gray-900 truncate pr-2">{eventName}</h3>
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium flex-shrink-0">
+                        {assignments.length}
                       </span>
                     </div>
                     <ChevronDown 
-                      className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+                      className={`w-5 h-5 text-gray-400 transition-transform duration-200 flex-shrink-0 ${
                         isExpanded ? 'transform rotate-180' : ''
                       }`} 
                     />
@@ -222,21 +194,21 @@ const TargetAssignments: React.FC<TargetAssignmentsProps> = ({ apiBaseUrl }) => 
                 </button>
 
                 {isExpanded && (
-                  <div className="px-6 pb-6">
-                    <div className="space-y-4">
+                  <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+                    <div className="space-y-3 sm:space-y-4">
                       {sortedTargetNumbers.map((targetNo) => {
                         const targetAssignments = targetGroups[targetNo];
                         return (
-                          <div key={targetNo} className="bg-gray-50 rounded-lg p-4">
-                            <h4 className="text-md font-semibold text-gray-900 mb-3 flex items-center">
-                              <Target className="w-4 h-4 mr-2 text-orange-500" />
+                          <div key={targetNo} className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                            <h4 className="text-sm sm:text-md font-semibold text-gray-900 mb-3 flex items-center">
+                              <Target className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-orange-500" />
                               Target {targetNo}
                             </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
                               {targetAssignments
                                 .sort((a, b) => a.Assign.localeCompare(b.Assign))
                                 .map((assignment) => (
-                                <div key={`${targetNo}-${assignment.Assign}-${assignment.Name}`} className="bg-white rounded-md p-3 border border-gray-200">
+                                <div key={`${targetNo}-${assignment.Assign}-${assignment.Name}`} className="bg-white rounded-md p-3 border border-gray-200 touch-manipulation active:bg-gray-50 transition-colors duration-150">
                                   <div className="flex items-center justify-between mb-2">
                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">
                                       {assignment.Assign}
@@ -246,18 +218,18 @@ const TargetAssignments: React.FC<TargetAssignmentsProps> = ({ apiBaseUrl }) => 
                                         ? 'bg-blue-100 text-blue-800' 
                                         : 'bg-pink-100 text-pink-800'
                                     }`}>
-                                      {assignment.Gender}
+                                      {assignment.Gender === 'Male' ? 'M' : 'F'}
                                     </span>
                                   </div>
-                                  <p className="font-medium text-gray-900 text-sm mb-1">
+                                  <p className="font-medium text-gray-900 text-xs sm:text-sm mb-1 leading-tight">
                                     {assignment.Name}
                                   </p>
-                                  <p className="text-gray-600 text-xs">
+                                  <p className="text-gray-600 text-xs leading-tight">
                                     {assignment.Club}
                                   </p>
                                   {assignment["Com No"] && (
                                     <p className="text-gray-500 text-xs mt-1">
-                                      Com No: {assignment["Com No"]}
+                                      Com: {assignment["Com No"]}
                                     </p>
                                   )}
                                 </div>

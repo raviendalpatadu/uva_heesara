@@ -74,35 +74,35 @@ const PublicPage: React.FC = () => {
         isPublicView={true}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Tab Navigation */}
-        <div className="mb-8 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Tab Navigation - Mobile Optimized */}
+        <div className="mb-6 sm:mb-8 border-b border-gray-200">
+          <nav className="-mb-px flex">
             <button
               onClick={() => setActiveTab('entries')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-sm transition-colors duration-200 touch-manipulation select-none active:scale-95 ${
                 activeTab === 'entries'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5" />
-                <span>Event Entries</span>
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="truncate">Event Entries</span>
               </div>
             </button>
             
             <button
               onClick={() => setActiveTab('targets')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-sm transition-colors duration-200 touch-manipulation select-none active:scale-95 ${
                 activeTab === 'targets'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center space-x-2">
-                <Target className="w-5 h-5" />
-                <span>Target Assignments</span>
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Target className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="truncate">Target Assignments</span>
               </div>
             </button>
           </nav>
