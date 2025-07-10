@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from './Header';
 import EventEntriesDisplay from './EventEntriesDisplay';
+import TargetAssignments from './TargetAssignments';
 import { PageLoading } from './Loading';
 import { loadApiData } from '../utils/dataProcessor';
+import { Target, Users } from 'lucide-react';
 
 const PublicPage: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'entries' | 'targets'>('entries');
+
   // Query for participant data
   const { data: dashboardData, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['publicParticipantsData'],
@@ -70,11 +74,52 @@ const PublicPage: React.FC = () => {
         isPublicView={true}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Event Entries Display - Public View */}
-        <EventEntriesDisplay 
-          archers={dashboardData.archers} 
-        />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Tab Navigation - Mobile Optimized */}
+        <div className="mb-6 sm:mb-8 border-b border-gray-200">
+          <nav className="-mb-px flex">
+            <button
+              onClick={() => setActiveTab('entries')}
+              className={`flex-1 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-sm transition-colors duration-200 touch-manipulation select-none active:scale-95 ${
+                activeTab === 'entries'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="truncate">Event Entries</span>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('targets')}
+              className={`flex-1 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-sm transition-colors duration-200 touch-manipulation select-none active:scale-95 ${
+                activeTab === 'targets'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Target className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="truncate">Target Assignments</span>
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'entries' && (
+          <EventEntriesDisplay 
+            archers={dashboardData.archers} 
+          />
+        )}
+        
+        {activeTab === 'targets' && (
+          <TargetAssignments 
+            apiBaseUrl={import.meta.env.VITE_API_BASE_URL} 
+          />
+        )}
       </main>
     </div>
   );
