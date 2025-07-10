@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from './Header';
 import EventEntriesDisplay from './EventEntriesDisplay';
+import TargetAssignments from './TargetAssignments';
 import { PageLoading } from './Loading';
 import { loadApiData } from '../utils/dataProcessor';
+import { Target, Users } from 'lucide-react';
 
 const PublicPage: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'entries' | 'targets'>('entries');
+
   // Query for participant data
   const { data: dashboardData, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['publicParticipantsData'],
@@ -71,10 +75,51 @@ const PublicPage: React.FC = () => {
       />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Event Entries Display - Public View */}
-        <EventEntriesDisplay 
-          archers={dashboardData.archers} 
-        />
+        {/* Tab Navigation */}
+        <div className="mb-8 border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('entries')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'entries'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Users className="w-5 h-5" />
+                <span>Event Entries</span>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('targets')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'targets'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Target className="w-5 h-5" />
+                <span>Target Assignments</span>
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'entries' && (
+          <EventEntriesDisplay 
+            archers={dashboardData.archers} 
+          />
+        )}
+        
+        {activeTab === 'targets' && (
+          <TargetAssignments 
+            apiBaseUrl={import.meta.env.VITE_API_BASE_URL} 
+          />
+        )}
       </main>
     </div>
   );
